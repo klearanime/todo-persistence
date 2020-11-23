@@ -2,26 +2,38 @@ const readline = require('readline');
 const fs = require('fs');
 
 
+const fileHasBeenRead = (err, fs) => {
+  if (err) {
+      throw err
+  }
+
+  const obj = JSON.parse(fs)
+  const todos = obj.todos
+  // console.log(todos)
+}
+
 const PATH_TO_TODOS_FILE = __dirname + '/../back-end/todos.json';
+fs.readFile(PATH_TO_TODOS_FILE, fileHasBeenRead)
 let todos = [];
 const interface = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
 
+
 const displayMenu = function() {
   const menu = `
-Your options are:
-
-1. Add a todo.
-2. Remove a todo.
-3. Remove all completed todos.
-4. Toggle a todo's completion status.
-5. Toggle a todo's priority.
-6. Quit.
-
-`
-
+  Your options are:
+  
+  1. Add a todo.
+  2. Remove a todo.
+  3. Remove all completed todos.
+  4. Toggle a todo's completion status.
+  5. Toggle a todo's priority.
+  6. Quit.
+  
+  `
+  
   interface.question(menu, handleMenu);
 }
 
@@ -38,10 +50,19 @@ const add = function(answer) {
     priority: 2,
     isComplete: false,
   }
-
+  
   todos.unshift(todo);
   displayTodos();
   displayMenu();
+}
+
+const saveTodos = () => {
+  const todo = JSON.stringify(todos, null, 2)
+  fs.writeFile(PATH_TO_TODOS_FILE, fs, 'utf8', (err) => {
+    if (err) {
+      throw err
+    }
+  })
 }
 
 const remove = function(num) {
@@ -122,3 +143,4 @@ const handleMenu = function(cmd) {
 
 displayTodos();
 displayMenu();
+saveTodos()
